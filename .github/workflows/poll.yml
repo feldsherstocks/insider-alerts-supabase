@@ -44,6 +44,16 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
         run: python copy_significant_trades.py
 
+      - name: Send significant trades to Telegram
+        id: send_significant
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python send_significant_trades.py
+
       - name: Commit updated state
         id: commit_state
         if: always()
@@ -62,6 +72,7 @@ jobs:
           if [ "${{ steps.run_alert.outcome }}" = "failure" ] || \
              [ "${{ steps.update_market_cap.outcome }}" = "failure" ] || \
              [ "${{ steps.copy_significant.outcome }}" = "failure" ] || \
+             [ "${{ steps.send_significant.outcome }}" = "failure" ] || \
              [ "${{ steps.commit_state.outcome }}" = "failure" ]; then
             echo "One or more steps failed."
             exit 1
