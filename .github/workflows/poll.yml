@@ -25,6 +25,13 @@ jobs:
           SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
         run: python alert.py
 
+      - name: Update market caps
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT }}
+        run: python update_market_cap.py
+
       - name: Commit updated state
         run: |
           git config user.name "insider-alert-bot"
