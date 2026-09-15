@@ -1,0 +1,8 @@
+{
+  "exclude_symbols": [],
+  "include_symbols": [],
+  "rules": [
+    { "transaction_types": ["buy"] },
+    { "transaction_types": ["sale"], "min_transaction_value": 100000 }
+  ]
+}
