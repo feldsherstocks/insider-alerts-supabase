@@ -55,8 +55,7 @@ jobs:
           git diff --staged --quiet || git commit -m "Update seen filings"
           git push
 
-      # If any earlier step failed, fail the job now so GitHub shows a red X
-      # and the email below correctly reports failure.
+      # If any earlier step failed, fail the job now so GitHub shows a red X.
       - name: Check for failures
         if: always()
         run: |
@@ -67,27 +66,3 @@ jobs:
             echo "One or more steps failed."
             exit 1
           fi
-
-      - name: Send email notification
-        if: always()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          username: ${{ secrets.EMAIL_USERNAME }}
-          password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "Insider Alert Run: ${{ job.status == 'success' && 'SUCCESS' || 'FAILURE' }}"
-          to: ${{ secrets.EMAIL_TO }}
-          from: Insider Alert Bot
-          body: |
-            Insider Alert workflow run finished.
-
-            Overall status: ${{ job.status }}
-
-            Step results:
-            - Alert script (fetch + insert filings): ${{ steps.run_alert.outcome }}
-            - Market cap update: ${{ steps.update_market_cap.outcome }}
-            - Copy significant trades: ${{ steps.copy_significant.outcome }}
-            - Commit state file: ${{ steps.commit_state.outcome }}
-
-            Full log: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
